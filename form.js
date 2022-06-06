@@ -16,28 +16,8 @@ const validateDate = (date) => {
 
 const validateHobbies = (hobbies) => hobbies.length > 0;
 
-const readData = (person) => {
-  const formFields = [
-    {
-      message: 'Please enter your name:',
-      parser: (data) => person.setName(data),
-      validator: validateName
-    },
-    {
-      message: 'Please enter your date of birth [yyyy-mm-dd]:',
-      parser: (data) => person.setDoB(data),
-      validator: validateDate
-    },
-    {
-      message: 'Please enter your hobbies:',
-      parser: (data) => person.setHobbies(data),
-      validator: validateHobbies
-    }
-  ];
-
-
+const readData = (formFields) => {
   let index = 0;
-
   console.log(formFields[0].message);
 
   process.stdin.on('data', (chunk) => {
@@ -59,7 +39,26 @@ const readData = (person) => {
 
 const main = () => {
   const person = new Person();
-  readData(person);
+
+  const formFields = [
+    {
+      message: 'Please enter your name:',
+      parser: (data) => person.setName(data),
+      validator: validateName
+    },
+    {
+      message: 'Please enter your date of birth [yyyy-mm-dd]:',
+      parser: (data) => person.setDoB(data),
+      validator: validateDate
+    },
+    {
+      message: 'Please enter your hobbies:',
+      parser: (data) => person.setHobbies(data),
+      validator: validateHobbies
+    }
+  ];
+
+  readData(formFields);
 };
 
 main();

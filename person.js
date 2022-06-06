@@ -14,7 +14,7 @@ class Person {
   }
 
   setHobbies(hobbies) {
-    this.hobbies = hobbies;
+    this.hobbies = hobbies.split(',');
   }
 
   toString() {

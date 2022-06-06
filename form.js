@@ -17,36 +17,43 @@ const validateDate = (date) => {
 const validateHobbies = (hobbies) => hobbies.length > 0;
 
 const readData = (person) => {
-  const messages = [
-    'Please enter your name:',
-    'Please enter your date of birth [yyyy-mm-dd]:',
-    'Please enter your hobbies:'
+  const formFields = [
+    {
+      message: 'Please enter your name:',
+      parser: (data) => person.setName(data),
+      validator: validateName
+    },
+    {
+      message: 'Please enter your date of birth [yyyy-mm-dd]:',
+      parser: (data) => person.setDoB(data),
+      validator: validateDate
+    },
+    {
+      message: 'Please enter your hobbies:',
+      parser: (data) => person.setHobbies(data),
+      validator: validateHobbies
+    }
   ];
-  const readers = [
-    (data) => person.setName(data),
-    (data) => person.setDoB(data),
-    (data) => person.setHobbies(data)
-  ];
-  const validators = [
-    validateName, validateDate, validateHobbies
-  ];
+
+
   let index = 0;
 
-  console.log(messages[0]);
+  console.log(formFields[0].message);
 
   process.stdin.on('data', (chunk) => {
-    if (!validators[index](chunk.trim())) {
+    if (!formFields[index].validator(chunk.trim())) {
+      console.log('Wrong input!');
       index--;
     } else {
-      readers[index](chunk.trim());
+      formFields[index].parser(chunk.trim());
     }
 
-    if (index >= messages.length - 1) {
+    if (index >= formFields.length - 1) {
       writeToFile('./form.json', person.toString());
       process.exit(0);
     }
     index++;
-    console.log(messages[index]);
+    console.log(formFields[index].message);
   });
 };
 

@@ -1,26 +1,37 @@
 const fs = require('fs');
+const { Person } = require('./person.js');
 
 const writeToFile = (fileName, data) => {
   fs.writeFileSync(fileName, data, 'utf8');
 };
 
 process.stdin.setEncoding('utf8');
-const readName = (form) => {
+
+const readName = (person) => {
   console.log('Please enter your name:');
   process.stdin.on('data', (chunk) => {
-    form.name = chunk.trim();
-    writeToFile('./form.json', JSON.stringify(form));
-    process.exit(0);
+    person.setName(chunk.trim());
+    process.stdin.removeAllListeners('data');
+
+    console.log('Please enter your dob:');
+    process.stdin.on('data', (chunk) => {
+      person.setDoB(chunk.trim());
+      process.stdin.removeAllListeners('data');
+
+      console.log('Please enter your hobbies:');
+      process.stdin.on('data', (chunk) => {
+        person.setHobbies(chunk.trim().split(','));
+        writeToFile('./form.json', person.toString());
+        console.log('Thank you');
+        process.exit(0);
+      });
+    });
   });
 };
 
 const main = () => {
-  const form = {
-    name: '',
-    doB: '',
-    hobbies: []
-  };
-  readName(form);
+  const person = new Person();
+  readName(person);
 };
 
 main();

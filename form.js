@@ -7,31 +7,36 @@ const writeToFile = (fileName, data) => {
 
 process.stdin.setEncoding('utf8');
 
-const readName = (person) => {
-  console.log('Please enter your name:');
+const readData = (person) => {
+  const messages = [
+    'Please enter your name:',
+    'Please enter your dob:',
+    'Please enter your hobbies:'
+  ];
+  const readers = [
+    (data) => person.setName(data),
+    (data) => person.setDoB(data),
+    (data) => person.setHobbies(data)
+  ];
+  let index = 0;
+
+  console.log(messages[0]);
+
   process.stdin.on('data', (chunk) => {
-    person.setName(chunk.trim());
-    process.stdin.removeAllListeners('data');
+    readers[index](chunk);
 
-    console.log('Please enter your dob:');
-    process.stdin.on('data', (chunk) => {
-      person.setDoB(chunk.trim());
-      process.stdin.removeAllListeners('data');
-
-      console.log('Please enter your hobbies:');
-      process.stdin.on('data', (chunk) => {
-        person.setHobbies(chunk.trim().split(','));
-        writeToFile('./form.json', person.toString());
-        console.log('Thank you');
-        process.exit(0);
-      });
-    });
+    if (index >= messages.length - 1) {
+      writeToFile('./form.json', person.toString());
+      process.exit(0);
+    }
+    index++;
+    console.log(messages[index]);
   });
 };
 
 const main = () => {
   const person = new Person();
-  readName(person);
+  readData(person);
 };
 
 main();

@@ -16,9 +16,11 @@ const validateDate = (date) => {
 
 const validateHobbies = (hobbies) => hobbies.length > 0;
 
-const readData = (formFields) => {
+const validatePhoneNo = (phoneNo) => phoneNo.match(/^\d{10}$/);
+
+const readData = (formFields, person) => {
   let index = 0;
-  console.log(formFields[0].message);
+  console.log(formFields[index].message);
 
   process.stdin.on('data', (chunk) => {
     if (!formFields[index].validator(chunk.trim())) {
@@ -55,10 +57,15 @@ const main = () => {
       message: 'Please enter your hobbies:',
       parser: (data) => person.setHobbies(data),
       validator: validateHobbies
+    },
+    {
+      message: 'Please enter your phone number:',
+      parser: (data) => person.setPhoneNo(data),
+      validator: validatePhoneNo
     }
   ];
 
-  readData(formFields);
+  readData(formFields, person);
 };
 
 main();

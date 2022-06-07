@@ -3,6 +3,7 @@ class Person {
     this.name = '';
     this.doB = '';
     this.hobbies = [];
+    this.phoneNo = '';
   }
 
   setName(name) {
@@ -15,6 +16,10 @@ class Person {
 
   setHobbies(hobbies) {
     this.hobbies = hobbies.split(',');
+  }
+
+  setPhoneNo(phoneNo) {
+    this.phoneNo = phoneNo;
   }
 
   toString() {

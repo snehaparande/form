@@ -18,6 +18,7 @@ const recordResponse = (form, response, loger, onComplete) => {
 
   if (form.isFilled()) {
     onComplete(form.getResponses());
+    loger('Thank you!');
     return;
   }
   loger(form.currentPrompt());

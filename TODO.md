@@ -1,9 +1,9 @@
 **TODO:**
   - [ ] Validate `responses` while filling
-  - [ ] Add `Thank you` message.
   
   **DONE:**
 
+  - [x] Add `Thank you` message
   - [x] Add parser in `Field`
   - [x] Test `recordResponses`
   - [x] Extract callback function

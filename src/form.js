@@ -1,3 +1,4 @@
+/* eslint-disable max-statements */
 /* eslint-disable no-param-reassign */
 const fs = require('fs');
 const { Field } = require('./field.js');
@@ -12,6 +13,7 @@ process.stdin.setEncoding('utf8');
 const recordResponse = (form, response, loger, onComplete) => {
   if (!form.isValid(response)) {
     loger('Wrong input!');
+    loger(form.currentPrompt());
     return;
   }
   if (form.currentPrompt().includes('hobbies')) {
@@ -107,4 +109,4 @@ const createForm = () => {
   return form;
 };
 
-module.exports = { Form, createForm, fillForm };
+module.exports = { Form, createForm, fillForm, recordResponse };

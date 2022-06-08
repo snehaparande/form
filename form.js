@@ -1,5 +1,6 @@
+/* eslint-disable max-statements */
 const fs = require('fs');
-const { Person } = require('./person.js');
+const { Field } = require('./Field.js');
 
 const writeToFile = (fileName, data) => {
   fs.writeFileSync(fileName, data, 'utf8');
@@ -10,62 +11,98 @@ process.stdin.setEncoding('utf8');
 const validateName = (name) => name.length >= 5;
 
 const validateDate = (date) => {
-  return date.length === 10 &&
-    date.match(/\d{4}-\d{2}-\d{2}/);
+  return date.match(/^\d{4}-\d{2}-\d{2}$/);
 };
 
 const validateHobbies = (hobbies) => hobbies.length > 0;
 
 const validatePhoneNo = (phoneNo) => phoneNo.match(/^\d{10}$/);
 
-const readData = (formFields, person) => {
-  let index = 0;
-  console.log(formFields[index].message);
+const readData = (form) => {
+  console.log(form.currentPrompt());
 
   process.stdin.on('data', (chunk) => {
-    if (!formFields[index].validator(chunk.trim())) {
+    let response = chunk.trim();
+    if (!form.isValid(response)) {
       console.log('Wrong input!');
-      index--;
-    } else {
-      formFields[index].parser(chunk.trim());
+      console.log(form.currentPrompt());
+      return;
     }
+    if (form.currentPrompt().includes('hobbies')) {
+      response = response.split(',');
+    }
+    form.fillField(response);
 
-    if (index >= formFields.length - 1) {
-      writeToFile('./form.json', person.toString());
-      process.exit(0);
+    if (form.isFilled()) {
+      writeToFile('./form.json', JSON.stringify(form.getResponses()));
+      process.stdin.destroy();
+      return;
     }
-    index++;
-    console.log(formFields[index].message);
+    console.log(form.currentPrompt());
   });
 };
 
+class Form {
+  #fields;
+  #index;
+  constructor(...fields) {
+    this.#fields = fields;
+    this.#index = 0;
+  }
+
+  currentPrompt() {
+    const currentField = this.#fields[this.#index];
+    return currentField.getPrompt();
+  }
+
+  isValid(response) {
+    const currentField = this.#fields[this.#index];
+    return currentField.isValid(response);
+  }
+
+  fillField(response) {
+    const currentField = this.#fields[this.#index];
+    currentField.fill(response);
+    this.#index++;
+  }
+
+  isFilled() {
+    return this.#fields.every(field => field.isFilled());
+  }
+
+  getResponses() {
+    return this.#fields.reduce((responses, field) => {
+      const { name, response } = field.getEntry();
+      responses[name] = response;
+      return responses;
+    }, {});
+  }
+}
+
+exports.Form = Form;
+
 const main = () => {
-  const person = new Person();
+  const nameField = new Field('name', 'Please enter your name:', validateName);
+  const dobField = new Field(
+    'doB',
+    'Please enter your dob [yyyy-mm-dd]:',
+    validateDate
+  );
+  const hobbiesField = new Field(
+    'hobbies',
+    'Please enter your hobbies:',
+    validateHobbies
+  );
 
-  const formFields = [
-    {
-      message: 'Please enter your name:',
-      parser: (data) => person.setName(data),
-      validator: validateName
-    },
-    {
-      message: 'Please enter your date of birth [yyyy-mm-dd]:',
-      parser: (data) => person.setDoB(data),
-      validator: validateDate
-    },
-    {
-      message: 'Please enter your hobbies:',
-      parser: (data) => person.setHobbies(data),
-      validator: validateHobbies
-    },
-    {
-      message: 'Please enter your phone number:',
-      parser: (data) => person.setPhoneNo(data),
-      validator: validatePhoneNo
-    }
-  ];
+  const phoneField = new Field(
+    'phoneNo',
+    'Please enter your phone number:',
+    validatePhoneNo
+  );
 
-  readData(formFields, person);
+  const form = new Form(nameField, dobField, hobbiesField, phoneField);
+
+  readData(form);
 };
 
 main();

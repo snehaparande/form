@@ -1,8 +1,8 @@
-const { createForm, fillForm } = require("./src/form");
+const { createForm, fillForm } = require('./src/form.js');
 
 const main = () => {
   const form = createForm();
-  fillForm(form);
+  fillForm(form, console.log);
 };
 
 main();

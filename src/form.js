@@ -1,44 +1,36 @@
-/* eslint-disable max-statements */
+/* eslint-disable no-param-reassign */
 const fs = require('fs');
 const { Field } = require('./field.js');
 
-const writeToFile = (fileName, data) => {
-  fs.writeFileSync(fileName, data, 'utf8');
+const onComplete = (responses) => {
+  fs.writeFileSync('./form.json', JSON.stringify(responses), 'utf8');
+  process.stdin.destroy();
 };
 
 process.stdin.setEncoding('utf8');
 
-const validateName = (name) => name.length >= 5;
+const recordResponse = (form, response, loger, onComplete) => {
+  if (!form.isValid(response)) {
+    loger('Wrong input!');
+    return;
+  }
+  if (form.currentPrompt().includes('hobbies')) {
+    response = response.split(',');
+  }
+  form.fillField(response);
 
-const validateDate = (date) => {
-  return date.match(/^\d{4}-\d{2}-\d{2}$/);
+  if (form.isFilled()) {
+    onComplete(form.getResponses());
+    return;
+  }
+  loger(form.currentPrompt());
 };
 
-const validateHobbies = (hobbies) => hobbies.length > 0;
-
-const validatePhoneNo = (phoneNo) => phoneNo.match(/^\d{10}$/);
-
-const fillForm = (form) => {
-  console.log(form.currentPrompt());
+const fillForm = (form, loger) => {
+  loger(form.currentPrompt());
 
   process.stdin.on('data', (chunk) => {
-    let response = chunk.trim();
-    if (!form.isValid(response)) {
-      console.log('Wrong input!');
-      console.log(form.currentPrompt());
-      return;
-    }
-    if (form.currentPrompt().includes('hobbies')) {
-      response = response.split(',');
-    }
-    form.fillField(response);
-
-    if (form.isFilled()) {
-      writeToFile('./form.json', JSON.stringify(form.getResponses()));
-      process.stdin.destroy();
-      return;
-    }
-    console.log(form.currentPrompt());
+    recordResponse(form, chunk.trim(), loger, onComplete);
   });
 };
 
@@ -50,19 +42,20 @@ class Form {
     this.#index = 0;
   }
 
+  #currentField() {
+    return this.#fields[this.#index];
+  }
+
   currentPrompt() {
-    const currentField = this.#fields[this.#index];
-    return currentField.getPrompt();
+    return this.#currentField().getPrompt();
   }
 
   isValid(response) {
-    const currentField = this.#fields[this.#index];
-    return currentField.isValid(response);
+    return this.#currentField().isValid(response);
   }
 
   fillField(response) {
-    const currentField = this.#fields[this.#index];
-    currentField.fill(response);
+    this.#currentField().fill(response);
     this.#index++;
   }
 
@@ -79,23 +72,35 @@ class Form {
   }
 }
 
+const isValidLength = (name) => name.length >= 5;
+
+const isDate = (date) => date.match(/^\d{4}-\d{2}-\d{2}$/);
+
+const isNotEmpty = (hobbies) => hobbies.length > 0;
+
+const isTenDigitNum = (phoneNo) => phoneNo.match(/^\d{10}$/);
+
 const createForm = () => {
-  const nameField = new Field('name', 'Please enter your name:', validateName);
+  const nameField = new Field(
+    'name',
+    'Please enter your name:',
+    isValidLength
+  );
   const dobField = new Field(
     'doB',
     'Please enter your dob [yyyy-mm-dd]:',
-    validateDate
+    isDate
   );
   const hobbiesField = new Field(
     'hobbies',
     'Please enter your hobbies:',
-    validateHobbies
+    isNotEmpty
   );
 
   const phoneField = new Field(
     'phoneNo',
     'Please enter your phone number:',
-    validatePhoneNo
+    isTenDigitNum
   );
 
   const form = new Form(nameField, dobField, hobbiesField, phoneField);

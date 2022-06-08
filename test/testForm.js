@@ -4,8 +4,8 @@ const { Form, recordResponse } = require('../src/form');
 
 describe('Form', () => {
   it('should give the current prompt', () => {
-    const nameField = new Field('name', 'Enter name', () => true);
-    const dobField = new Field('doB', 'Enter dob', () => true);
+    const nameField = new Field('name', 'Enter name');
+    const dobField = new Field('doB', 'Enter dob');
     const form = new Form(nameField, dobField);
     form.fillField('someone');
 
@@ -13,8 +13,8 @@ describe('Form', () => {
   });
 
   it('should say is form filled', () => {
-    const nameField = new Field('name', 'Enter name', () => true);
-    const dobField = new Field('doB', 'Enter dob', () => true);
+    const nameField = new Field('name', 'Enter name');
+    const dobField = new Field('doB', 'Enter dob');
     const form = new Form(nameField, dobField);
 
     form.fillField('someone');
@@ -25,8 +25,8 @@ describe('Form', () => {
   });
 
   it('should return all the responses of the form', () => {
-    const nameField = new Field('name', 'Enter name', () => true);
-    const dobField = new Field('doB', 'Enter dob', () => true);
+    const nameField = new Field('name', 'Enter name');
+    const dobField = new Field('doB', 'Enter dob');
     const form = new Form(nameField, dobField);
 
     form.fillField('someone');
@@ -54,7 +54,7 @@ const isValidLength = (response) => response.length >= 5;
 
 describe('recordResponse', () => {
   it('should record current field', () => {
-    const nameField = new Field('name', 'Enter name', () => true);
+    const nameField = new Field('name', 'Enter name');
     const form = new Form(nameField);
 
     recordResponse(form, 'someone', identity, identity);
@@ -63,8 +63,8 @@ describe('recordResponse', () => {
   });
 
   it('should print next prompt after recording current field', () => {
-    const nameField = new Field('name', 'Enter name', () => true);
-    const dobField = new Field('doB', 'Enter dob', () => true);
+    const nameField = new Field('name', 'Enter name');
+    const dobField = new Field('doB', 'Enter dob');
     const form = new Form(nameField, dobField);
 
     const expectedLog = ['Enter dob'];

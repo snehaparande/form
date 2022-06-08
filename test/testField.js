@@ -3,7 +3,7 @@ const { Field } = require('../src/field');
 
 describe('Field', () => {
   it('Should return the prompt of the field', () => {
-    const field = new Field('name', 'Enter name', () => true);
+    const field = new Field('name', 'Enter name');
     assert.strictEqual(field.getPrompt(), 'Enter name');
   });
 
@@ -16,15 +16,22 @@ describe('Field', () => {
   });
 
   it('Should fill the given response', () => {
-    const field = new Field('name', 'Enter name', () => true);
+    const field = new Field('name', 'Enter name');
     field.fill('abcd');
     assert.strictEqual(field.isFilled(), true);
   });
 
   it('Should return name and response of the field', () => {
-    const field = new Field('name', 'Enter name', () => true);
-    field.fill('abcd');
-    assert.deepStrictEqual(field.getEntry(), { name: 'name', response: 'abcd' });
+    const splitByComma = (response) => response.split(',');
+    const field = new Field(
+      'hobbies',
+      'Enter hobbies',
+      () => true,
+      splitByComma
+    );
+    field.fill('abc,def');
+    const expected = { name: 'hobbies', response: ['abc', 'def'] };
+    assert.deepStrictEqual(field.getEntry(), expected);
   });
 
 });

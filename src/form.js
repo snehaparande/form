@@ -1,5 +1,3 @@
-/* eslint-disable max-statements */
-/* eslint-disable no-param-reassign */
 const fs = require('fs');
 const { Field } = require('./field.js');
 
@@ -15,9 +13,6 @@ const recordResponse = (form, response, loger, onComplete) => {
     loger('Wrong input!');
     loger(form.currentPrompt());
     return;
-  }
-  if (form.currentPrompt().includes('hobbies')) {
-    response = response.split(',');
   }
   form.fillField(response);
 
@@ -82,6 +77,8 @@ const isNotEmpty = (hobbies) => hobbies.length > 0;
 
 const isTenDigitNum = (phoneNo) => phoneNo.match(/^\d{10}$/);
 
+const splitByComma = (response) => response.split(',');
+
 const createForm = () => {
   const nameField = new Field(
     'name',
@@ -96,7 +93,8 @@ const createForm = () => {
   const hobbiesField = new Field(
     'hobbies',
     'Please enter your hobbies:',
-    isNotEmpty
+    isNotEmpty,
+    splitByComma
   );
 
   const phoneField = new Field(

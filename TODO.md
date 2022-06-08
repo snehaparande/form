@@ -1,10 +1,10 @@
 **TODO:**
-  - [ ] Add parsor in `Field`
   - [ ] Validate `responses` while filling
   - [ ] Add `Thank you` message.
   
   **DONE:**
 
+  - [x] Add parser in `Field`
   - [x] Test `recordResponses`
   - [x] Extract callback function
   - [x] Remove dependency

@@ -1,6 +1,6 @@
 /* eslint-disable max-statements */
 const fs = require('fs');
-const { Field } = require('./Field.js');
+const { Field } = require('./field.js');
 
 const writeToFile = (fileName, data) => {
   fs.writeFileSync(fileName, data, 'utf8');
@@ -18,7 +18,7 @@ const validateHobbies = (hobbies) => hobbies.length > 0;
 
 const validatePhoneNo = (phoneNo) => phoneNo.match(/^\d{10}$/);
 
-const readData = (form) => {
+const fillForm = (form) => {
   console.log(form.currentPrompt());
 
   process.stdin.on('data', (chunk) => {
@@ -79,9 +79,7 @@ class Form {
   }
 }
 
-exports.Form = Form;
-
-const main = () => {
+const createForm = () => {
   const nameField = new Field('name', 'Please enter your name:', validateName);
   const dobField = new Field(
     'doB',
@@ -101,8 +99,7 @@ const main = () => {
   );
 
   const form = new Form(nameField, dobField, hobbiesField, phoneField);
-
-  readData(form);
+  return form;
 };
 
-main();
+module.exports = { Form, createForm, fillForm };

@@ -1,5 +1,5 @@
 const assert = require('assert');
-const { Field } = require('../src/Field');
+const { Field } = require('../src/field');
 
 describe('Field', () => {
   it('Should return the prompt of the field', () => {

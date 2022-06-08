@@ -5,8 +5,8 @@
   - [ ] Remove dependency
     - [ ] Inject the `console`
     - [ ] Inject the `fs.writeFile`
-  - [ ] Separate `main` function in different file
   
   **DONE:**
 
+  - [x] Separate `main` function in different file
   - [x] Add tests for `Form` and `Field`

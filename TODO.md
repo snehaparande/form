@@ -4,6 +4,7 @@
   
   **DONE:**
 
+  - [x] Initiate `npm` package manager
   - [x] Increase the `index` only when `field` is filled
   - [x] Validate `response` while filling
   - [x] Add `Thank you` message

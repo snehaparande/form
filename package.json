@@ -1,0 +1,26 @@
+{
+  "name": "form",
+  "version": "1.0.0",
+  "description": "Fills a form and stores the data in json file",
+  "main": "fillForm.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "mocha",
+    "start": "node fillForm.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/snehaparande/form.git"
+  },
+  "author": "Sneha",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/snehaparande/form/issues"
+  },
+  "homepage": "https://github.com/snehaparande/form#readme",
+  "devDependencies": {
+    "mocha": "^10.0.0"
+  }
+}

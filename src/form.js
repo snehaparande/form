@@ -8,20 +8,19 @@ const onComplete = (responses) => {
 
 process.stdin.setEncoding('utf8');
 
-const recordResponse = (form, response, loger, onComplete) => {
-  if (!form.isValid(response)) {
-    loger('Wrong input!');
-    loger(form.currentPrompt());
-    return;
+const recordResponse = (form, response, logger, onComplete) => {
+  try {
+    form.fillField(response);
+  } catch (error) {
+    logger('Wrong input!');
   }
-  form.fillField(response);
 
   if (form.isFilled()) {
     onComplete(form.getResponses());
-    loger('Thank you!');
+    logger('Thank you!');
     return;
   }
-  loger(form.currentPrompt());
+  logger(form.currentPrompt());
 };
 
 const fillForm = (form, loger) => {
@@ -48,13 +47,14 @@ class Form {
     return this.#currentField().getPrompt();
   }
 
-  isValid(response) {
-    return this.#currentField().isValid(response);
-  }
-
   fillField(response) {
-    this.#currentField().fill(response);
-    this.#index++;
+    if (!this.#currentField().fill(response)) {
+      throw new Error('Invalid Response');
+    }
+
+    if (this.#currentField().isFilled()) {
+      this.#index++;
+    }
   }
 
   isFilled() {

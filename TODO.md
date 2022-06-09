@@ -1,8 +1,11 @@
 **TODO:**
-  - [ ] Validate `responses` while filling
+  - [ ] Test `fillForm.js` using bash script
+  - [ ] Add adderss field
   
   **DONE:**
 
+  - [x] Increase the `index` only when `field` is filled
+  - [x] Validate `response` while filling
   - [x] Add `Thank you` message
   - [x] Add parser in `Field`
   - [x] Test `recordResponses`

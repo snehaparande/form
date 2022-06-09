@@ -2,6 +2,9 @@ const assert = require('assert');
 const { Field } = require('../src/Field');
 const { Form, recordResponse } = require('../src/form');
 
+const identity = (arg) => arg;
+const isValidLength = (response) => response.length >= 5;
+
 describe('Form', () => {
   it('should give the current prompt', () => {
     const nameField = new Field('name', 'Enter name');
@@ -22,6 +25,13 @@ describe('Form', () => {
 
     form.fillField('2001-12-21');
     assert.strictEqual(form.isFilled(), true);
+  });
+
+  it('should throw the error when response is invalid', () => {
+    const nameField = new Field('name', 'Enter name', isValidLength);
+    const form = new Form(nameField);
+
+    assert.throws(() => form.fillField('some'), new Error('Invalid Response'));
   });
 
   it('should return all the responses of the form', () => {
@@ -48,9 +58,6 @@ const mockLoger = (expectedLog, actualLog) => {
     index++;
   };
 };
-
-const identity = (arg) => arg;
-const isValidLength = (response) => response.length >= 5;
 
 describe('recordResponse', () => {
   it('should record current field', () => {

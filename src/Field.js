@@ -17,12 +17,16 @@ class Field {
     return this.#prompt;
   }
 
-  isValid(response) {
+  #isValid(response) {
     return this.#validator(response);
   }
 
   fill(response) {
+    if (!this.#isValid(response)) {
+      return false;
+    }
     this.#response = response;
+    return true;
   }
 
   isFilled() {
